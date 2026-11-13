@@ -1,0 +1,23 @@
+# /farm3/eject : 출력 완료된 보드를 프린터에서 꺼내 수령대에 놓기
+# 순서: 홈 → 프린터[printer_pos_id] 집기 → 홈 → 수령대[receive_pos_id] 놓기 → 홈
+
+# ---- goal ----
+int32 work_id
+int8 printer_pos_id      # 프린터 ID
+int8 receive_pos_id      # 수령대 칸 ID
+---
+# ---- result ----
+uint8 WORK_TYPE_INSERT=0
+uint8 WORK_TYPE_EJECT=1
+bool success
+string message
+int32 work_id
+uint8 work_type          # 항상 WORK_TYPE_EJECT
+---
+# ---- feedback ----
+builtin_interfaces/Time start_at
+builtin_interfaces/Time end_at   # 진행 중에는 0, 마지막 feedback 에서 채워짐
+int32 work_id
+uint32 step
+uint32 total
+string phase

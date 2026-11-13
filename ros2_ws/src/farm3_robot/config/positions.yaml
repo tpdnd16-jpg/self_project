@@ -1,0 +1,77 @@
+# =============================================================================
+# farm3_robot 설정: 위치 ID별 좌표, 보드 무게, 속도, 그리퍼
+#
+# 좌표계: 로봇 베이스 좌표계, 단위 mm / deg
+#   작업 좌표 [x, y, z, rx, ry, rz]   (자세 0,180,0 = 그리퍼가 바닥을 향함)
+#
+# ★ 좌표와 무게는 아직 비어 있습니다(null).
+#   `ros2 run farm3_robot print_pose` 로 로봇을 교시해서 얻은 값을 채우세요.
+#   비어 있는 ID 를 사용하는 작업은 실행 전에 거부됩니다 (dry-run 은 예외).
+#
+# 위치 1곳의 정의
+#   approach : 장비 앞 안전 위치 (여기서 수평으로 들어가고 나온다)
+#   target   : 보드를 잡거나 내려놓는 정확한 위치
+#   lift_dz  : 보드를 잡은 뒤 들어 올리는 높이 (mm). 선반·베드에서 떼어낼 만큼
+# =============================================================================
+
+robot:
+  id: dsr01
+  model: m0609
+
+home_j: [0.0, 0.0, 90.0, 0.0, 90.0, 0.0]   # 홈 관절 좌표 (deg)
+
+motion:
+  velocity_scale: 0.3        # 0 초과 ~ 1 이하. 첫 시운전은 0.2 권장
+  joint_vel: 40.0            # deg/s    홈 이동 (movej)
+  joint_acc: 40.0
+  travel_vel: [150.0, 40.0]  # [mm/s, deg/s]  approach 까지 이동
+  travel_acc: [300.0, 80.0]
+  fine_vel: [30.0, 20.0]     # 장비 안쪽 정밀 이동
+  fine_acc: [60.0, 40.0]
+  settle_sec: 0.3            # 잡기/놓기 직전 정지 안정화 시간
+  via_home:                  # 집은 뒤 홈을 거쳐서 놓으러 갈지
+    insert: true
+    eject: true
+
+# 보드 무게: 들고 있는 동안 로봇 페이로드로 설정 (충돌 감지 정확도에 영향)
+payload:
+  board_empty_kg: null       # 새 보드 (투입 시)
+  board_printed_kg: null     # 출력물이 올라간 보드 (회수 시)
+  cog: [0.0, 0.0, 0.0]       # 그리퍼 TCP 기준 무게중심 (mm)
+
+gripper:
+  # mock: 하드웨어 없음 / onrobot_modbus: Compute Box Modbus TCP / dsr_io: 컨트롤러 디지털 출력
+  backend: mock
+  ip: 192.168.1.1
+  port: 502
+  open_width: 60.0           # mm (RG2 최대 110)
+  grip_width: 0.0            # mm 목표 폭 (보드에 닿으면 force 로 정지)
+  force: 20.0                # N  (RG2 최대 40)
+  timeout_sec: 5.0
+  dsr_io:
+    grip:    {1: 1, 2: 0}    # {출력 번호: 값}
+    release: {1: 0, 2: 1}
+    settle_sec: 1.0
+
+workspace:
+  x: [-700.0, 750.0]
+  y: [-750.0, 750.0]
+  z: [50.0, 700.0]
+  max_reach: 850.0           # M0609 공칭 900mm - 여유 50mm
+  base_height: 135.0
+
+# --- 적재대 (Insert.start_pos_id) : 새 보드. 1 = 맨 아래층 -----------------------
+stackers:
+  1: {approach: null, target: null, lift_dz: 10.0}
+  2: {approach: null, target: null, lift_dz: 10.0}
+  3: {approach: null, target: null, lift_dz: 10.0}
+
+# --- 프린터 (printer_pos_id) ------------------------------------------------------
+printers:
+  1: {approach: null, target: null, lift_dz: 15.0}
+  2: {approach: null, target: null, lift_dz: 15.0}
+
+# --- 수령대 (Eject.receive_pos_id) : 출력 완료 보드 --------------------------------
+receivers:
+  1: {approach: null, target: null, lift_dz: 10.0}
+  2: {approach: null, target: null, lift_dz: 10.0}
