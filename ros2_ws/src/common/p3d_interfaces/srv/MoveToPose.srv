@@ -1,0 +1,12 @@
+# 로봇 이동 요청 (/robot/move_to_pose)
+# pose_name 이 비어 있지 않으면 설정 파일의 이름 있는 위치로 이동, 비어 있으면 target 사용
+uint8 MOVE_J=0           # 관절 보간 (target = 관절 좌표)
+uint8 MOVE_L=1           # 직선 보간 (target = 작업 좌표)
+
+string pose_name
+uint8 move_type
+float64[6] target
+float32 velocity_scale   # 0 초과 ~ 1 이하, 0 이면 기본값
+---
+bool success
+string message

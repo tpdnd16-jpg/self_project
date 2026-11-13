@@ -1,0 +1,14 @@
+# 플레이트 교체 (/plate_swap) — 오래 걸리는 작업이라 action 으로 정의
+# goal
+uint8 printer_id
+int32 done_slot          # -1 이면 다음 빈 슬롯 자동 선택
+int32 fresh_slot         # -1 이면 다음 슬롯 자동 선택
+---
+# result
+bool success
+string message
+---
+# feedback
+string phase
+uint32 step
+uint32 total

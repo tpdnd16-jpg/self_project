@@ -1,0 +1,13 @@
+# 그리퍼 명령 (/gripper/command)
+uint8 OPEN=0
+uint8 GRIP=1
+uint8 MOVE_TO_WIDTH=2
+
+uint8 command
+float32 width            # mm, MOVE_TO_WIDTH 일 때만 사용
+float32 force            # N, 0 이면 기본값
+---
+bool success
+bool object_detected     # GRIP 후 물체 감지 여부
+float32 width            # 현재 폭 mm
+string message

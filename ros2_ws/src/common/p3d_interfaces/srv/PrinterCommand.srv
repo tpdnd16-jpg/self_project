@@ -1,0 +1,12 @@
+# 프린터 명령 (/printer/command)
+uint8 START_PRINT=0
+uint8 PAUSE=1
+uint8 RESUME=2
+uint8 CANCEL=3
+
+uint8 printer_id
+uint8 command
+string job_name          # START_PRINT 일 때 출력할 파일
+---
+bool success
+string message
